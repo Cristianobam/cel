@@ -1,0 +1,1064 @@
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Cristiano & Leticia</title>
+
+    <meta name="keywords" content>
+    <meta name="description"
+      content="Seja bem-vindo ao site de casamento dos noivos Cristiano e Leticia!">
+
+    <meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="author" content>
+    <meta name="copyright" content="©">
+
+    <link rel="stylesheet" href="_styles/styles.css" type="text/css">
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+
+    
+    <script type="text/javascript" src="/_scripts/TweenLite.min.js"></script>
+    <!---
+    <script type="text/javascript" src="/_scripts/CSSPlugin.min.js"></script>
+    -->
+    <script type="text/javascript" src="/_scripts/autogrow-min.js"></script>
+
+    <script type="text/javascript">
+        var isWin = navigator.platform.indexOf('Win') >= 0;
+        
+        function headerHeight() {
+            headerH = $('header').height();
+            headerPT = Number($('header').css('padding-top').slice(0,-2));
+            headerPB = Number($('header').css('padding-bottom').slice(0,-2));
+            headerH = headerH + headerPB + headerPT;
+            return headerH;
+        }
+        
+        function selectPlaceholder() {
+            var $this = $(this);
+            var val = $this.val();
+            if (val == '') {
+                $this.addClass('hasPlaceholder');
+            } else {
+                $this.removeClass('hasPlaceholder');
+            }
+        }
+        
+        // add error for RSVP and Form
+        function addError(f,t) {
+            f.addClass('error').val(t).one('focus', function(){
+                $(this).removeClass('error').val('');
+            });
+        }
+        
+        // RSVP and Form validity control
+        let validityInit = true;
+        let resetValidityInit;
+        
+        function resetInvalidEvents(thisForm) {
+            thisForm.find('*[required]').off('invalid');
+            thisForm.find('*[required]').on('invalid', function(e) {
+                e.preventDefault();
+                //console.log($(this));
+                //$.each($(this), function(i,e) {
+                    if (this.validity.typeMismatch) {
+                        let fieldVal = this.value;
+                        addError($(this), 'sorry "' + fieldVal + '" is not a valid email address');
+                    } else {
+                        addError($(this), '');
+                    }
+                //});
+                if (validityInit) {
+                    let destination = $(this).offset().top - (headerHeight() + 20);
+                    TweenLite.to('html, body', 0.6, {scrollTop: destination, delay: 0.2, ease: Power3.easeOut});
+                    validityInit = false;
+                    clearTimeout(resetValidityInit);
+                    resetValidityInit = setTimeout(() => {
+                        validityInit = true;
+                    }, 1000);
+                }
+            });
+        }
+        
+        $(document).ready(function() {
+            var collage = $('.gallery-collage').is('.gallery-collage');
+            var newSection;
+            var isSingleNav = $('#navContent').hasClass('singleNav');
+            
+            if (isWin) { $('body').addClass('isWin') };
+            
+            $('textarea').autogrow({
+                context: $(this).closest('section'),
+                fixMinHeight: true,
+                onInitialize: true
+            });
+            
+            function footerHeight() {
+                if ($('footer').is('footer')) {
+                    footerH = $('footer').height();
+                    footerPT = Number($('footer').css('padding-top').slice(0,-2));
+                    footerPB = Number($('footer').css('padding-bottom').slice(0,-2));
+                    footerH = footerH + footerPB + footerPT;
+                } else {
+                    footerH = 0;
+                }
+                return footerH;
+            }
+            
+            function setMinHeight(hh,fh) {
+                var pageHeight = 'min-height: calc(100vh - ' + (hh + fh) + 'px' + ');';
+                if ($('#secMinHeight').is('#secMinHeight')) $('#secMinHeight').remove();
+                if ($('main').hasClass('singlePage')) {
+                    $('body').prepend('<style type="text/css" id="secMinHeight">main.singlePage {' + pageHeight + '}</style>');
+                } else {
+                    $('body').prepend('<style type="text/css" id="secMinHeight">main section {' + pageHeight + '}</style>');
+                }
+            }
+                    
+            function scrollToSection(t) {
+                newSection = (t == '') ? 'home' : t.replace(/\S+#/, '');
+                var headerH = headerHeight();
+                $('section.' + newSection).show();
+                sizeVideo();
+                if (collage) {
+                    $('.gallery-collage').filter(':visible').each(function(i,e) {
+                        galleryAreaW = $(e).width();
+                        positionImgs($(e),galleryAreaW);
+                    })
+                }
+                var destination = $('section.' + newSection).offset().top - headerH;
+                TweenLite.to('html, body', 0.6, {scrollTop: destination, delay: 0.2, ease: Power3.easeOut});
+            }
+            
+            // navigation
+            var nav = false;
+            
+            function closeNav() {
+                var navItemsLen = $('#navContent nav a').length;
+                $('#navContent nav a').each(function(i,e) {
+                    setTimeout(function() {$('#navContent nav a').eq(navItemsLen - i).removeClass('active')}, i * 100);
+                }).promise().done(function() {
+                    $('#navContent').removeClass('active').fadeOut('fast', function() {
+                        $('#mm').removeClass('closeNav');
+                        nav = false;
+                    });
+                });
+            }
+            
+            $('#mm').click(function() {
+                //scrollT = $(window).scrollTop();
+                if (nav) {
+                    closeNav();
+                } else {
+                    //$('nav').css('top', scrollT);
+                    $('#navContent').fadeIn('fast', function() {
+                        $(this).addClass('active');
+                        $('#mm').addClass('closeNav');
+                        if (!$(this).hasClass('split')) {
+                            var topScroll = $(window).scrollTop();
+                            ($(window).height() >= $('body').height()) ? $(this).height($(window).height()) : $(this).height($('body').height() + headerHeight());
+                            $('#navContent nav').css('top', topScroll + ($(window).height() * 0.09));
+                        }
+                        setTimeout(function() {
+                            $('#navContent nav a').each(function(i,e) {
+                                setTimeout(function() {$(e).addClass('active')}, i * 100);
+                            });
+                        }, 200);
+                        nav = true;
+                    });
+                }
+            });
+            
+            $('#navContent').click(function() {
+                closeNav();
+            });
+            
+            // change to new page
+            var siteTitle = 'Cristiano & Leticia';
+            var custom = '';
+            var directory = '/reese';
+            var siteURL = (location.hostname.search('myblissandbone.com') >= 0) ? directory : custom;
+            var page = 'home';
+            var newPage, $thisMenuItem;
+            var startPage = 'home';
+            var coverpage = false;
+            var changeHistory = false;
+            var initload = true;
+            
+            function loadPage(t) {
+                newPage = (t == '') ? startPage : t.replace(/\S+#/, '');
+                $thisMenuItem = $('a[href="' + newPage + '"]').eq(0);
+                title = ($thisMenuItem) ? $thisMenuItem.text() : '';
+            $('#navContent .navItem').removeClass('select');
+            $thisMenuItem.addClass('select');
+            $('footer').fadeOut(400);
+                $('section' + '.' + page).fadeOut(400, function() {
+                    $('header, footer').removeClass(page).removeClass('coverpage');
+                    $('section.' + newPage).fadeIn('fast', function() {
+                        if ($(this).hasClass('gallery-collage')) {
+                            positionImgs($(this),$(this).width());
+                        }
+                    $('footer').fadeIn('fast', function() {
+                        setMinHeight(headerHeight(), footerHeight());
+                    });
+                    $('section.' + newPage).css('margin-top', headerHeight());
+                    sizeVideo();
+                    TweenLite.to('html, body', 0.6, {scrollTop: 0, delay: 0.2, ease: Power3.easeOut});
+                    });
+                    coverpage = ($('section.' + newPage).hasClass('coverpage')) ? true : false;
+                    if (coverpage) {
+                        $('header, footer').addClass(newPage + ' coverpage');
+                        if ($('section.' + newPage).hasClass('header')) {
+                            $('header').removeClass('cover bottom').addClass('header');
+                        } else if ($('section.' + newPage).hasClass('bottom')) {
+                            $('header').removeClass('cover header').addClass('bottom');
+                        } else {
+                            $('header').removeClass('header bottom').addClass('cover');
+                        }
+                    } else {
+                        $('header, footer').addClass(newPage);
+                    }
+                    
+                    if (!changeHistory && newPage != 'home') {
+                        window.history.pushState({set: newPage, title: siteTitle + ' | ' + title}, siteTitle + ' | ' + title, siteURL + '/#' + newPage);
+                        $('title').text(siteTitle + ' | ' + title);
+                    } else if (!changeHistory) {
+                        window.history.pushState({set: newPage, title: siteTitle}, siteTitle, siteURL);
+                        $('title').text(siteTitle);
+                    }
+                    changeHistory = false;
+                    page = newPage;
+                });
+            }
+            
+            function loadPageSingle(t) {
+                newPage = (t == '') ? startPage : t.replace(/\S+#/, '');
+                $thisMenuItem = $('a[href="' + newPage + '"]').eq(0);
+                title = ($thisMenuItem) ? $thisMenuItem.text() : '';
+                $('#navContent .navItem').removeClass('select');
+                $thisMenuItem.addClass('select');
+                if (window.loaded) {
+                    scrollToSection(newPage);
+                }
+                
+                if (!changeHistory && newPage != 'home') {
+                    window.history.pushState({set: newPage, title: siteTitle + ' | ' + title}, siteTitle + ' | ' + title, siteURL + '/#' + newPage);
+                    $('title').text(siteTitle + ' | ' + title);
+                } else if (!changeHistory) {
+                    window.history.pushState({set: newPage, title: siteTitle}, siteTitle, siteURL);
+                    $('title').text(siteTitle);
+                }
+                changeHistory = false;
+                page = newPage;
+                
+            }
+            
+            // processes click for navigation items
+            $('.navItem').click(function(e) {
+                //console.log('click');
+                e.preventDefault();
+                $thisMenuItem = $(this);
+            initload = false;
+                if (isSingleNav) {
+                    loadPageSingle($thisMenuItem.attr('href'));
+                } else {
+                    loadPage($thisMenuItem.attr('href'));
+                    //scrollToSection($thisMenuItem.attr('href'));
+                }
+        });
+        
+        // back and forward buttons
+        window.onpopstate = function(e){
+                if(e.state){
+                    newPage = e.state.set;
+                    //$thisMenuItem = $('a[href="' + newPage + '"]');
+                    changeHistory = true;
+                    if (isSingleNav) {
+                        loadPageSingle(newPage);
+                    } else {
+                        loadPage(newPage);
+                    }
+                    $('title').text(e.state.title);
+                } else {
+                    if (!initload) {
+                        //$thisMenuItem = $('a[href="' + startPage + '"]');
+                        //console.log('no state, init = false');
+                        if (isSingleNav) {
+                            loadPageSingle(startPage);
+                        } else {
+                            loadPage(startPage);
+                        }
+                        changeHistory = true;
+                    } else {
+                        //console.log('no state, init = true');
+                    }
+                }
+            }
+            
+            if (history.state) {
+                newPage = history.state.set;
+                //$thisMenuItem = $('a[href="' + newPage + '"]');
+                changeHistory = true;
+                if (isSingleNav) {
+                    loadPageSingle(newPage);
+                } else {
+                    loadPage(newPage);
+                }
+                //console.log('history');
+                $('title').text(history.state.title);
+            } else {
+                newPage = (location.hash) ? location.hash.slice(1) : startPage;
+                //$thisMenuItem = $('a[href="' + newPage + '"]');
+                changeHistory = false;
+                if (isSingleNav) {
+                    loadPageSingle(newPage);
+                } else {
+                    loadPage(newPage);
+                }
+                //(location.hash) ? console.log('hash') : console.log('load');
+            }
+        
+        if (location.hash) {
+            newSection = location.hash.slice(1);
+            }
+            
+            
+            // iframe video sizing
+            function sizeVideo() {
+                $('.imgCont iframe').each(function(i,e) {
+                    propWidth = Number($(e).prop('width'));
+                    propHeight = Number($(e).prop('height'));
+                    frameWidth = $(e).parent().width();
+                    iframeRatio = propHeight / propWidth;
+                    $(e).height(frameWidth * iframeRatio);
+                })
+            }
+            
+            // gallery progressive image loading
+    /*
+            function switchSRC(i) {
+                src = i.attr('url');
+                i.attr('url','');
+                i.attr('src', src);
+            };
+            
+            var add = 0;
+            
+            $(window).scroll(function(e) {
+          winPos = $(window).scrollTop() + $(window).height();
+                lastImg = $('.gallery img').eq(-1).offset().top;
+                if (winPos >= lastImg && add == 0) {
+                    add = 1;
+                    if ($('.galleryMore img').is('img')) {
+                        for (var i = 0; i < 4; i++) {
+                            switchSRC($('.galleryMore img').eq(0));
+                            $moreImage = $('.galleryMore img').eq(0).detach();
+                            $('.gallery').append($moreImage);
+                            if (i == 3) add = 0;
+                        }
+                    }
+                }
+        });
+    */
+    
+            function positionImgs(t,w) {
+                var imgHeights = [];
+                var multi = 0;
+                var maxH = 0;
+    /*
+                if (w >= 1359) {
+                    imgHeights = [0,0,0,0];
+                } else
+    */ if (w >= 1018) {
+                    imgHeights = [0,0,0];
+                } else {
+                    imgHeights = [0,0];
+                }
+                t.children('.section').each(function(i,e) {
+                    imgH = $(this).height();
+                    imgHeights[multi] += imgH;
+                    multi++;
+                    if ((i + 1) % imgHeights.length == 0) {
+                        maxH = Math.max.apply(null,imgHeights);
+                        //console.log(imgHeights);
+                        for (var m = 1; m < imgHeights.length + 1; m++) {
+                            if (i == imgHeights.length - 1) t.children('.section').eq(m - 1).css('margin-top', 0);
+                            //console.log(i + m, 'max: ' + -maxH + ', imgH: ' + imgHeights[m - 1]);
+                            t.children('.section').eq(i + m).css('margin-top', -maxH + imgHeights[m - 1]);
+                        }
+                        multi = 0;
+                    }
+                })
+            }
+            
+            
+            $('.gallery-collage').filter(':visible').find('.section img').each(function(i,e) {
+                var $this = $(e).closest('.gallery-collage');
+                $(this).on('load', function() {
+                    positionImgs($this,$this.width());
+                })
+            });
+            
+            $('select').change(selectPlaceholder);
+            
+            $('select').each(selectPlaceholder);
+    
+            $(window).resize(function() {
+                $winH = $(this).height();
+                $mainH = $('main').height();
+                var headerH = headerHeight();
+                sizeVideo();
+                if (collage) {
+                    galleryAreaW = $('.gallery-collage').filter(':visible').width();
+                    positionImgs($('.gallery-collage').filter(':visible'),galleryAreaW);
+                }
+                if ($('.coverpage.header').is('section')) {
+                    $('.coverpage.header .bgBox').each(function(i,e) {
+                        $(this).height($winH - headerH);
+                    })
+                }
+            });
+            
+            // time delay resize
+    /*
+            setTimeout(function() {
+                $(window).resize();
+            }, 100);
+    */
+            
+            $(window).on('load', function() {
+                $(this).resize();
+                // change to header logo on load, may need to weight for fonts to load
+                var headerH = headerHeight();
+                var footerH = footerHeight();
+                //var mmH = $('#mm').height();
+                $('section').each(function(i,e) {
+                    if ($(e).hasClass('coverpage')) {
+                        if ($(e).hasClass('header')) {
+                            $(e).css('margin-top', headerH + 'px');
+                        }
+                    } else {
+                        $(e).css('margin-top', headerH + 'px');
+                    }
+                });
+                if (newSection) scrollToSection(newSection);
+                if ($('.coverpage.header').is('section')) {
+                    $('.coverpage.header .bgBox').each(function(i,e) {
+                        $(this).height($(window).height() - headerH);
+                    })
+                }
+                setMinHeight(headerH,footerH);
+                
+                            // scroll mm menu color change
+                /* var sections = [];
+                
+                $('main > section').each(function(i,e) {
+                    sections.push({el: $(e), topPos: $(e).offset().top, bottomPos: $(e).offset().top + $(e).height()});
+                }); */
+                
+                var homeCoverpage = $('main > section.home.coverpage');
+                if (homeCoverpage.length > 0) {
+                    var coverHomeProps = {el: homeCoverpage, topPos: homeCoverpage.offset().top, bottomPos: homeCoverpage.offset().top + homeCoverpage.height()}
+                    
+                    $(window).scroll(function(e) {
+                        winPos = $(window).scrollTop();
+                        /* for (var i = 0; i < sections.length; i++) {
+                            if (winPos => sections[i].topPos && winPos < sections[i].bottomPos) {
+                                
+                            }
+                        } */
+                        if (winPos < coverHomeProps.bottomPos) {
+                            $('header').addClass('coverpage');
+                        } else {
+                            $('header').removeClass('coverpage');
+                        }
+                    });
+                    $(window).scroll();
+                }
+                            
+                window.loaded = true;
+            });
+            
+        });
+    </script>
+
+  </head>
+  <body>
+    <style type="text/css" id="secMinHeight">main.singlePage {min-height: calc(100vh - 132px);}</style>
+
+    <div id="navContent" class="split inverse singleNav" style="display: none;">
+      <div class="bgBox" style="background-color: var(--primary-color-25d)"></div>
+      <nav>
+        <div class="navScroll">
+          <a href="home" class="navItem select" rel="nofollow">Home Page</a>
+          <a href="p97645" class="navItem" rel="nofollow">The Wedding</a>
+          <a href="p97646" class="navItem" rel="nofollow">Other Events</a>
+          <a href="p97647" class="navItem" rel="nofollow">Travel Details</a>
+          <a href="p97649" class="navItem" rel="nofollow">Registry</a>
+          <a href="p97669" class="navItem" rel="nofollow">Responda</a>
+        </div> </nav>
+    </div>
+
+    <header class="home singlePage cover coverpage"> <h1
+        class="monogram text">
+        <a href="home" class="navItem" rel="nofollow">
+          Cristiano & Leticia </a>
+      </h1>
+    </header>
+
+    <main class="singlePage">
+
+      <!-- start of page_visible conditional -->
+      <!-- coverpage -->
+
+      <style type="text/css">
+        @media (max-width: 920px) {
+          main section.coverpage h1#coverpage_0 {font-size: 15.108695652174vw !important;}						 			
+        }
+      </style>
+
+      <section class="home halign-center valign-middle coverpage cover"
+        style="background-color: #" data-color>
+        <div class="bgBox"
+          style="filter: saturate(120%) hue-rotate(-10.8deg) brightness(100%) blur(0px) ; background-image: url(_assets/bg.jpeg); background-position: center center"></div>
+        <h1 id="coverpage_0" class="logo"
+          style="font-size: 139px; color: var(--primary-color-25d); letter-spacing: 0px;">
+          <span>Cristiano <br> & <br> Leticia</span>
+        </h1>
+      </section>
+
+      <!-- end of page_visible conditional -->
+      <!-- start of page_visible conditional -->
+
+      <section class="content_page LocalTime" style="margin-top: 63px;">
+
+        <!-- end .section -->
+
+        <div class="section full addPadd">
+
+          <div class="sectionCont small">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <div class="imgCont " style="background-color: var(--primary-color-25d)">
+
+              <!-- with image all text on image -->
+              <div id="head_10" class="textCont">
+                <h2 style="color: #FFFBF7; ">O Casamento</h2>
+                <div class="subsection"><h3 style="color: #FFFBF7">15 de Junho
+                    de 2024</h3><h4
+                    style="color: #FFFBF7"><br>
+                    Às Sete da Noite<br>
+                    São Bernador do Campo - SP<br>
+                    Av. Lucas Nogueira Garcez, s/n<br>
+                    Cerimônia</h4></div> </div>
+
+            </div>
+
+          </div>
+          <!-- end sectionCont -->
+
+        </div><!-- end .section -->
+
+        <div class="section split ">
+
+          <div class="sectionCont medium addPadd">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <div class="imgCont " style="background-color: var(--secondary-color-25l)">
+
+              <!-- with image all text on image -->
+              <div id="head_11" class="textCont">
+                <h2 style="color: var(--primary-color-25d); ">Depois do Aceito</h2>
+                <div class="subsection"><h3 style="color: var(--primary-color-25d)">8:30PM ATÉ
+                    2:30AM<br>
+                  </h3><h4 style="color: var(--primary-color-25d)"><br>
+                    Buffet Jardim Viena<br>
+                    São Bernardo do Campo - SP<br>
+                    R. Eng. Isaac Garcêz, 429 - Vila Caminho do Mar<br>
+                    Festa</h4></div> </div>
+            </div>
+
+          </div>
+          <!-- end sectionCont -->
+
+          <div class="sectionCont medium addPadd">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <div class="imgCont  ">
+
+              <div class="bgBox"
+                style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) opacity(100%) blur(0px) ; background-image: url(_assets/flower.jpeg); background-position: center center"></div>
+              <!-- with image all text on image -->
+              <div id="head_12" class="textCont">
+              </div>
+
+            </div>
+
+          </div>
+          <!-- end sectionCont -->
+
+        </div><!-- end .section -->
+
+      </section>
+
+      <!-- end of page_visible conditional -->
+      <!-- start of page_visible conditional -->
+
+      <section class="content_page p97647" style="margin-top: 83px;">
+
+        <!-- end .section -->
+
+        <div class="section full ">
+
+          <style type="text/css">
+                                                 @media (max-width: 768px) {
+                                                     .textCont#head_30 {font-size: 70% }								 			}
+                                                 @media (max-width: 480px) {
+                                                     .textCont#head_30 {font-size: 60% }								 			}
+                                             </style>
+
+          <div class="sectionCont medium addPadd">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <div class="imgCont " style="background-color: var(--primary-color-25d)">
+
+              <!-- with image all text on image -->
+              <div id="head_30" class="textCont">
+                <h2 style="color: #FFFBF7; font-size: 7.4285714285714em">Lista
+                  de Presentes</h2>
+                <div class="subsection">
+                  <h3 style="color: #FFFBF7">Nossas listas<br>
+                    & <br>
+                    Ajuda na Obra
+                  </h3></div> </div>
+
+            </div>
+
+          </div>
+          <!-- end sectionCont -->
+
+        </div><!-- end .section -->
+
+        <div class="section split ">
+
+          <div class="sectionCont medium addPadd">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <div class="imgCont " style="background-color: var(--secondary-color-25l)">
+
+              <!-- with image all text on image -->
+              <div id="head_31" class="textCont">
+                <h2 style>On-Line</h2>
+                <h4 style="color: #">Colocamos uma lista de presente em duas
+                  lojas <br>
+                  Fique a vontade em escolher qualquer uma <br></h4>
+                <div class="subsection">
+                  <div class="buttonCont">
+                    <a href="https://www.extra.com.br"
+                      class="button" target="_blank" style="color: #">
+                      Extra
+                    </a>
+                  </div>
+                  <div class="buttonCont">
+                    <a href="https://www.pontofrio.com.br" class="button" target="_blank" style="color: #">
+                      Ponto Frio
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- end sectionCont -->
+
+          <div class="sectionCont medium addPadd">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <div class="imgCont " style="background-color: var(--secondary-color-25l)">
+
+              <!-- with image all text on image -->
+              <div id="head_32" class="textCont">
+                <h2 style>Obra</h2>
+                <div class="subsection">
+                  <h4 style="color: #">Caso você queira contribuir com a nossa
+                    reforma </h4>
+                  <h4>Criamos uma lojinha on-line para vocês nos ajudarem na
+                    reforma do apê</h4>
+                  <div class="buttonCont">
+                    <a href="https://www.expedia.com/" class="button" target="_blank" style="color: #">
+                      Lojinha
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+          <!-- end sectionCont -->
+
+        </div><!-- end .section -->
+
+      </section>
+
+      <!-- end of page_visible conditional -->
+      <!-- start of page_visible conditional -->
+
+      <section class="content_page Obrigado" style="margin-top: 83px;">
+
+        <!-- end .section -->
+
+        <div class="section full ">
+
+          <style type="text/css">
+                                                 @media (max-width: 768px) {
+                                                     .textCont#head_40 {font-size: 70% }								 			}
+                                                 @media (max-width: 480px) {
+                                                     .textCont#head_40 {font-size: 60% }								 			}
+                                             </style>
+
+          <div class="sectionCont medium addPadd">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <div class="imgCont  ">
+
+              <div class="bgBox"
+                style="filter: saturate(160%) hue-rotate(-7.2deg) brightness(110%) blur(0px) ; background-image: url(_assets/flower.jpeg); background-position: center center"></div>
+              <!-- with image all text on image -->
+              <div id="head_40" class="textCont">
+                <h2 style="font-size: 7.4285714285714em">Obrigado</h2>
+                <div class="subsection">
+                  <h3 style="color: #">Do Fundo do Nosso Coração</h3>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!-- end sectionCont -->
+
+        </div><!-- end .section -->
+
+      </section>
+
+      <!-- end of page_visible conditional -->
+      <!-- start of page_visible conditional -->
+
+      <section class="gallery-thumbnails galeria" style="margin-top: 56px; background-color:var(--primary-color-25l);">
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/7ccb3a851542cc2534d903f4aee96cb9.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/1185f400ca3fec41c87f94e2b800cfda.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/768d905eb2acd4041064153ab0596aa4.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/5427764ac80ad858aab807cdf6f52bdb.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/04da82e8cba2b3f06a3d73db447bfa3f.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/ca892d3a8890bb60f1f3e7e838c6ada0.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/284bf9cdebfad9585c894b45a86f9792.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/37edb5fbfa861ebe4bca81c73f5bbd8d.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/a304790c2b6b489344cac6e491d6aa95.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/db8143c924a84ba49c9d6dda237b37f8.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/01bd930f8efd3407725242027840fb6e.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="imgCont">
+            <img
+              src="https://myblissandbone.com/carter/_images/0c392ada5165141539d82e7a19d73576.jpeg"
+              style="filter: saturate(100%) hue-rotate(0deg) brightness(100%) blur(0px) ">
+          </div>
+        </div>
+
+        <h4 class="credit"></h4>
+
+      </section>
+
+      <!-- end of page_visible conditional -->
+      <!-- start of page_visible conditional -->
+
+      <section class="content_page p97669" style="margin-top: 77px;">
+
+        <!-- end .section -->
+
+        <div class="section full addPadd">
+
+          <style type="text/css">
+                 @media (max-width: 768px) {
+                   .textCont#head_60 {font-size: 70% }								 			}
+                 @media (max-width: 480px) {
+                   .textCont#head_60 {font-size: 60% }								 			}
+               </style>
+
+          <div class="sectionCont small">
+            <!-- **if an image, bgcolor, video or map is added for this section** -->
+            <!-- *if image and text* -->
+
+            <a href="p97650" class="imgCont navItem"
+              style="background-color: var(--secondary-color-25l)">
+
+              <!-- with image all text on image -->
+              <div id="head_60" class="textCont">
+                <h2 style="font-size: 5.43em">Confirme Sua Presença</h2>
+              </div>
+
+            </a>
+
+          </div>
+          <!-- end sectionCont -->
+
+        </div><!-- end .section -->
+
+      </section>
+      <!-- end of page_visible conditional -->
+      <!-- start of page_visible conditional -->
+
+      <section class="rsvp topImage p97650"
+        style="display: none; margin-top: 65px;">
+
+        <script type="text/javascript">
+					$(document).ready(function() {
+						var newGroup = $('#addGuest97650').prev('.group').clone();
+						var num = 0;
+						
+						function resetRSVP_reqEvent(i,e) {
+							$(e).change(function(e) {
+								var eventReqFields = $(this).closest('.event').find('input:not(.notRequired), select:not(.rsvpResponse):not(.notRequired), textarea:not(.notRequired)');
+								if (this.value == '1') {
+									eventReqFields.prop('required', true);
+									resetInvalidEvents($(this).closest('form'));
+								} else {
+									eventReqFields.prop('required', false);
+									resetInvalidEvents($(this).closest('form'));
+								}
+							});
+						}
+						$('.rsvpResponse').each(resetRSVP_reqEvent);
+						
+						$('#addGuest97650 .add').click(function() {
+							$this = $(this).parent();
+							num = num + 1;
+							var newGuest = newGroup.clone();
+							//newGuest.find('input:not(.radio)').val('');
+							newGuest.find('input, select, textarea').each(function() {
+								nameVal = $(this).attr('name');
+								nameNewVal = nameVal.replace('guests[0]', 'guests[' + num + ']');
+								$(this).attr('name', nameNewVal);
+							});
+							newGuest.find('input.radio').each(function() {
+								idVal = $(this).attr('id');
+								forVal = $(this).next('label').attr('for');
+								idNewVal = idVal.replace('yes0', 'yes' + num).replace('no0', 'no' + num);
+								forNewVal = forVal.replace('yes0', 'yes' + num).replace('no0', 'no' + num);
+								$(this).attr('id', idNewVal);
+								$(this).next('label').attr('for', forNewVal);
+							});
+							newGuest.find('select').on('change', selectPlaceholder);
+							newGuest.find('.rsvpResponse').each(resetRSVP_reqEvent);
+							
+              console.log(newGuest);
+							
+              $this.before(newGuest.hide());
+							$this.prev('.group').slideDown(400);
+							if (num > 0) {
+								$this.find('.sub').addClass('on');
+							} else {
+								$this.find('.sub').removeClass('on');
+							}
+							resetInvalidEvents($this.closest('form'));
+						});
+						
+						$('#addGuest97650 .sub').click(function() {
+							$this = $(this).parent();
+							num = num - 1;
+							$this.prev('.group').slideUp(400, function() {
+								$(this).remove();
+								if (num < 1) {
+									$this.find('.sub').removeClass('on');
+								}
+								resetInvalidEvents($this.closest('form'));
+							});
+						});
+
+						$('#rsvp297650').submit(function(e) {
+							e.preventDefault();
+							$this = $(this);
+							url = $this.attr('action');
+							$.ajax({
+								url: url,
+								type: 'post',
+								dataType: 'json',
+								data: $(this).serialize()
+							}).fail(function(jqXHR, textStatus){
+								$('#rsvp297650 #note97650').addClass('error').html('Ops... Algo deu errado. ' + textStatus);
+							}).done(function(data) {
+								if (data.success) {
+																			$this.slideUp(400).after('<h3 style="text-align:center;" class="confirmText">Obrigado por sua confirmação.</h3>');
+																			setTimeout(function() {
+											$(window).resize();
+										}, 600);
+										destination = $this.offset().top - (headerHeight() + 20);
+										TweenLite.to('html, body', 0.4, {scrollTop: destination, delay: 0.4, ease: Power3.easeOut});
+								} else {
+									$('#rsvp297650 #note97650').addClass('error').html('Ops... Algo deu errado. ' + data.error_message);
+								}
+							});
+						});
+						resetInvalidEvents($('#rsvp297650'));
+					});
+				</script>
+
+        <div class="mediaCont" style="background-color: var(--secondary-color-25l)">
+          <img src="https://myblissandbone.com/_images/placeholder_img_land.png">
+        </div>
+        
+        <form id="rsvp297650" class="rsvpImage" method="post">
+          <input type="hidden" name="sid" value="10332">
+          <input type="hidden" name="pid" value="97650">
+          <input type="hidden" name="rid" value="2">
+          <input type="hidden" name="email" value>
+          <div style="display:none;"><input type="text" name="hpid" id="hpid"></div>
+
+          <div class="content">
+            <h2 style>Répondez S'il Vous Plaît</h2>
+            <h4 id="note97650">Até Abril de 2024</h4>
+            <div class="line"></div>
+          </div>
+
+          <div class="content">
+
+            <div class="group guest">
+              <input required class="large" type="text" name="guests[0][name]" placeholder="Nome Completo">
+              <div class="event">
+                <h3>Cerimônia</h3>
+                <div class="selectWrap">
+                  <select required name="guests[0][events][event1][response]" class="rsvpResponse hasPlaceholder">
+                    <option value>Vai se juntar a nós?</option>
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="event">
+                <h3>Festa</h3>
+                <div class="selectWrap">
+                  <select required name="guests[0][events][event2][response]" class="rsvpResponse hasPlaceholder">
+                    <option value>Vai se juntar a nós?</option>
+                    <option value="1">Sim</option>
+                    <option value="0">Não</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+            <a id="addGuest97650" class="addGuestBtn">
+              <span class="icon add"></span>
+              <span class="text">Adicionar Convidado</span>
+              <span class="icon sub"></span>
+            </a>
+
+            <div class="line"></div>
+
+            <button class="button rsvp" type="submit" value="Submit" name="submit">
+              <span> Enviar </span>
+            </button>
+
+          </div>
+        </form>
+
+      </section>
+
+      <!-- end of page_visible conditional -->
+      <div class="spacer"></div> 
+    </main>
+
+    <footer class="home ">
+      <h6>&lt;&sol;&gt; com &hearts; por Cris</h6>
+    </footer>
+
+    <script type="text/javascript" src="/_scripts/tracker-codes.js"></script>
+
+  </body>
+</html>
