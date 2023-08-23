@@ -418,8 +418,11 @@ header {
 	top: 0;
 	left: 0;
 	background-color: var(--secondary-color-25l);
-	z-index: 600;
-	overflow: hidden; }
+	box-shadow: 1px 2px rgba(0, 0, 0, 0.05);
+  z-index: 600;
+	overflow: hidden; 
+  }
+
   header:after {
     content: "";
     display: block;

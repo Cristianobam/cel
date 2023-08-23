@@ -14,15 +14,21 @@
     <meta name="copyright" content="©">
 
     <link rel="stylesheet" href="_styles/styles.css" type="text/css">
+    
+    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/10.3.0/firebase-app-compat.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/10.3.0/firebase-firestore-compat.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/firebasejs/10.3.0/firebase-auth-compat.js"></script>
+    
+
+    <script type="text/javascript" src="_scripts/firebase.js"></script>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
 
-    
     <script type="text/javascript" src="/_scripts/TweenLite.min.js"></script>
     <!---
     <script type="text/javascript" src="/_scripts/CSSPlugin.min.js"></script>
-    -->
     <script type="text/javascript" src="/_scripts/autogrow-min.js"></script>
+    -->
 
     <script type="text/javascript">
         var isWin = navigator.platform.indexOf('Win') >= 0;
@@ -60,15 +66,13 @@
             thisForm.find('*[required]').off('invalid');
             thisForm.find('*[required]').on('invalid', function(e) {
                 e.preventDefault();
-                //console.log($(this));
-                //$.each($(this), function(i,e) {
                     if (this.validity.typeMismatch) {
                         let fieldVal = this.value;
                         addError($(this), 'sorry "' + fieldVal + '" is not a valid email address');
                     } else {
                         addError($(this), '');
                     }
-                //});
+
                 if (validityInit) {
                     let destination = $(this).offset().top - (headerHeight() + 20);
                     TweenLite.to('html, body', 0.6, {scrollTop: destination, delay: 0.2, ease: Power3.easeOut});
@@ -88,12 +92,14 @@
             
             if (isWin) { $('body').addClass('isWin') };
             
+            /*
             $('textarea').autogrow({
                 context: $(this).closest('section'),
                 fixMinHeight: true,
                 onInitialize: true
             });
-            
+            */
+
             function footerHeight() {
                 if ($('footer').is('footer')) {
                     footerH = $('footer').height();
@@ -256,11 +262,11 @@
             
             // processes click for navigation items
             $('.navItem').click(function(e) {
-                //console.log('click');
                 e.preventDefault();
                 $thisMenuItem = $(this);
             initload = false;
                 if (isSingleNav) {
+                  console.log($thisMenuItem.attr('href'));
                     loadPageSingle($thisMenuItem.attr('href'));
                 } else {
                     loadPage($thisMenuItem.attr('href'));
@@ -335,42 +341,12 @@
                 })
             }
             
-            // gallery progressive image loading
-    /*
-            function switchSRC(i) {
-                src = i.attr('url');
-                i.attr('url','');
-                i.attr('src', src);
-            };
-            
-            var add = 0;
-            
-            $(window).scroll(function(e) {
-          winPos = $(window).scrollTop() + $(window).height();
-                lastImg = $('.gallery img').eq(-1).offset().top;
-                if (winPos >= lastImg && add == 0) {
-                    add = 1;
-                    if ($('.galleryMore img').is('img')) {
-                        for (var i = 0; i < 4; i++) {
-                            switchSRC($('.galleryMore img').eq(0));
-                            $moreImage = $('.galleryMore img').eq(0).detach();
-                            $('.gallery').append($moreImage);
-                            if (i == 3) add = 0;
-                        }
-                    }
-                }
-        });
-    */
     
             function positionImgs(t,w) {
                 var imgHeights = [];
                 var multi = 0;
                 var maxH = 0;
-    /*
-                if (w >= 1359) {
-                    imgHeights = [0,0,0,0];
-                } else
-    */ if (w >= 1018) {
+         if (w >= 1018) {
                     imgHeights = [0,0,0];
                 } else {
                     imgHeights = [0,0];
@@ -420,12 +396,6 @@
                 }
             });
             
-            // time delay resize
-    /*
-            setTimeout(function() {
-                $(window).resize();
-            }, 100);
-    */
             
             $(window).on('load', function() {
                 $(this).resize();
@@ -449,13 +419,7 @@
                     })
                 }
                 setMinHeight(headerH,footerH);
-                
-                            // scroll mm menu color change
-                /* var sections = [];
-                
-                $('main > section').each(function(i,e) {
-                    sections.push({el: $(e), topPos: $(e).offset().top, bottomPos: $(e).offset().top + $(e).height()});
-                }); */
+            
                 
                 var homeCoverpage = $('main > section.home.coverpage');
                 if (homeCoverpage.length > 0) {
@@ -463,11 +427,7 @@
                     
                     $(window).scroll(function(e) {
                         winPos = $(window).scrollTop();
-                        /* for (var i = 0; i < sections.length; i++) {
-                            if (winPos => sections[i].topPos && winPos < sections[i].bottomPos) {
-                                
-                            }
-                        } */
+
                         if (winPos < coverHomeProps.bottomPos) {
                             $('header').addClass('coverpage');
                         } else {
@@ -482,8 +442,8 @@
             
         });
     </script>
-
   </head>
+
   <body>
     <style type="text/css" id="secMinHeight">main.singlePage {min-height: calc(100vh - 132px);}</style>
 
@@ -547,12 +507,14 @@
               <div id="head_10" class="textCont">
                 <h2 style="color: #FFFBF7; ">O Casamento</h2>
                 <div class="subsection"><h3 style="color: #FFFBF7">15 de Junho
-                    de 2024</h3><h4
-                    style="color: #FFFBF7"><br>
-                    Às Sete da Noite<br>
+                    de 2024 &CenterDot; Às 7pm</h3>
+                    <h4 style="color: #FFFBF7"><br>
+                    Paróquia Santíssima Virgem<br>
                     São Bernador do Campo - SP<br>
                     Av. Lucas Nogueira Garcez, s/n<br>
-                    Cerimônia</h4></div> </div>
+                    Cerimônia</h4>
+                  </div> 
+                  </div>
 
             </div>
 
@@ -571,7 +533,7 @@
 
               <!-- with image all text on image -->
               <div id="head_11" class="textCont">
-                <h2 style="color: var(--primary-color-25d); ">Depois do Aceito</h2>
+                <h2 style="color: var(--primary-color-25d); ">Depois do Sim</h2>
                 <div class="subsection"><h3 style="color: var(--primary-color-25d)">8:30PM ATÉ
                     2:30AM<br>
                   </h3><h4 style="color: var(--primary-color-25d)"><br>
@@ -737,7 +699,7 @@
               <div id="head_40" class="textCont">
                 <h2 style="font-size: 7.4285714285714em">Obrigado</h2>
                 <div class="subsection">
-                  <h3 style="color: #">Do Fundo do Nosso Coração</h3>
+                  <h3 style="font-weight: bold;">Do Fundo do Nosso Coração</h3>
                 </div>
               </div>
             </div>
@@ -874,8 +836,7 @@
             <!-- **if an image, bgcolor, video or map is added for this section** -->
             <!-- *if image and text* -->
 
-            <a href="p97650" class="imgCont navItem"
-              style="background-color: var(--secondary-color-25l)">
+            <a href="forms" class="imgCont navItem" id="form-fill" style="background-color: var(--secondary-color-25l)">
 
               <!-- with image all text on image -->
               <div id="head_60" class="textCont">
@@ -893,102 +854,8 @@
       <!-- end of page_visible conditional -->
       <!-- start of page_visible conditional -->
 
-      <section class="rsvp topImage p97650"
-        style="display: none; margin-top: 65px;">
-
-        <script type="text/javascript">
-					$(document).ready(function() {
-						var newGroup = $('#addGuest97650').prev('.group').clone();
-						var num = 0;
-						
-						function resetRSVP_reqEvent(i,e) {
-							$(e).change(function(e) {
-								var eventReqFields = $(this).closest('.event').find('input:not(.notRequired), select:not(.rsvpResponse):not(.notRequired), textarea:not(.notRequired)');
-								if (this.value == '1') {
-									eventReqFields.prop('required', true);
-									resetInvalidEvents($(this).closest('form'));
-								} else {
-									eventReqFields.prop('required', false);
-									resetInvalidEvents($(this).closest('form'));
-								}
-							});
-						}
-						$('.rsvpResponse').each(resetRSVP_reqEvent);
-						
-						$('#addGuest97650 .add').click(function() {
-							$this = $(this).parent();
-							num = num + 1;
-							var newGuest = newGroup.clone();
-							//newGuest.find('input:not(.radio)').val('');
-							newGuest.find('input, select, textarea').each(function() {
-								nameVal = $(this).attr('name');
-								nameNewVal = nameVal.replace('guests[0]', 'guests[' + num + ']');
-								$(this).attr('name', nameNewVal);
-							});
-							newGuest.find('input.radio').each(function() {
-								idVal = $(this).attr('id');
-								forVal = $(this).next('label').attr('for');
-								idNewVal = idVal.replace('yes0', 'yes' + num).replace('no0', 'no' + num);
-								forNewVal = forVal.replace('yes0', 'yes' + num).replace('no0', 'no' + num);
-								$(this).attr('id', idNewVal);
-								$(this).next('label').attr('for', forNewVal);
-							});
-							newGuest.find('select').on('change', selectPlaceholder);
-							newGuest.find('.rsvpResponse').each(resetRSVP_reqEvent);
-							
-              console.log(newGuest);
-							
-              $this.before(newGuest.hide());
-							$this.prev('.group').slideDown(400);
-							if (num > 0) {
-								$this.find('.sub').addClass('on');
-							} else {
-								$this.find('.sub').removeClass('on');
-							}
-							resetInvalidEvents($this.closest('form'));
-						});
-						
-						$('#addGuest97650 .sub').click(function() {
-							$this = $(this).parent();
-							num = num - 1;
-							$this.prev('.group').slideUp(400, function() {
-								$(this).remove();
-								if (num < 1) {
-									$this.find('.sub').removeClass('on');
-								}
-								resetInvalidEvents($this.closest('form'));
-							});
-						});
-
-						$('#rsvp297650').submit(function(e) {
-							e.preventDefault();
-							$this = $(this);
-							url = $this.attr('action');
-							$.ajax({
-								url: url,
-								type: 'post',
-								dataType: 'json',
-								data: $(this).serialize()
-							}).fail(function(jqXHR, textStatus){
-								$('#rsvp297650 #note97650').addClass('error').html('Ops... Algo deu errado. ' + textStatus);
-							}).done(function(data) {
-								if (data.success) {
-																			$this.slideUp(400).after('<h3 style="text-align:center;" class="confirmText">Obrigado por sua confirmação.</h3>');
-																			setTimeout(function() {
-											$(window).resize();
-										}, 600);
-										destination = $this.offset().top - (headerHeight() + 20);
-										TweenLite.to('html, body', 0.4, {scrollTop: destination, delay: 0.4, ease: Power3.easeOut});
-								} else {
-									$('#rsvp297650 #note97650').addClass('error').html('Ops... Algo deu errado. ' + data.error_message);
-								}
-							});
-						});
-						resetInvalidEvents($('#rsvp297650'));
-					});
-				</script>
-
-        <div class="mediaCont" style="background-color: var(--secondary-color-25l)">
+      <section class="rsvp topImage forms" id="forms" style="display: none; margin-top: 65px;">
+        <div class="mediaCont" style="background-color: var(--secondary-color)">
           <img src="https://myblissandbone.com/_images/placeholder_img_land.png">
         </div>
         
@@ -1055,10 +922,11 @@
     </main>
 
     <footer class="home ">
-      <h6>&lt;&sol;&gt; com &hearts; por Cris</h6>
+      <h6>&lt;&sol;&gt; com &hearts; por Cris</h6><br>
+      <h6>Cristiano: (11) 98921-9636</h6>
+      <h6>Leticia: (11) 98542-5146</h6>
     </footer>
-
-    <script type="text/javascript" src="/_scripts/tracker-codes.js"></script>
-
+    
+    <script type="text/javascript" src="/_scripts/scripts.js"></script>
   </body>
 </html>
