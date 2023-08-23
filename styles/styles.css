@@ -16,40 +16,40 @@
 
     @font-face{
       font-family:"Biancha";
-      src:url("/_fonts/Biancha.otf") format("opentype"),url("/_fonts/Biancha.otf") format("opentype");
+      src:url("/fonts/Biancha.otf") format("opentype"),url("/fonts/Biancha.otf") format("opentype");
     }
     @font-face{
       font-family:"Taviraj";
-      src:url("/_fonts/Taviraj.ttf") format("truetype"),url("/_fonts/Taviraj.ttf") format("truetype");
+      src:url("/fonts/Taviraj.ttf") format("truetype"),url("/fonts/Taviraj.ttf") format("truetype");
     }
     
     @font-face{
       font-family:"Amoret Script Alt W05 Regular";
-      src:url("/_fonts/3aa6b234-5413-4d94-a9e1-6ffbafb8f1c7.woff2") format("woff2"),url("/_fonts/59016031-4f64-48f4-a38e-671b9e5f4117.woff") format("woff");
+      src:url("/fonts/3aa6b234-5413-4d94-a9e1-6ffbafb8f1c7.woff2") format("woff2"),url("/fonts/59016031-4f64-48f4-a38e-671b9e5f4117.woff") format("woff");
   }
   @font-face{
 		font-family:"Abramo Serif W05 Regular";
-		src:url("/_fonts/6ff1d662-4a7b-44a3-bad0-4f72bb2864e4.woff2") format("woff2"),url("/_fonts/dfadf5b5-a033-41c6-a86c-66a0915a64dd.woff") format("woff");
+		src:url("/fonts/6ff1d662-4a7b-44a3-bad0-4f72bb2864e4.woff2") format("woff2"),url("/fonts/dfadf5b5-a033-41c6-a86c-66a0915a64dd.woff") format("woff");
 	}
   @font-face{
 		font-family:"Simple Serenity Serif W05 Rg";
-		src:url("/_fonts/09f094b2-2c6f-4e65-95f7-17762c203840.woff2") format("woff2"),url("/_fonts/4aa3e1d6-a681-4d50-9cd4-356593b88382.woff") format("woff");
+		src:url("/fonts/09f094b2-2c6f-4e65-95f7-17762c203840.woff2") format("woff2"),url("/fonts/4aa3e1d6-a681-4d50-9cd4-356593b88382.woff") format("woff");
 	}
   @font-face{
     font-family:"Bird and Thorn W05 Regular";
-    src:url("/_fonts/11c6aeb4-7b81-495c-993c-3a5a5eae62ba.woff2") format("woff2"),url("/_fonts/ad7230bf-12b5-4f04-865c-128399e9d26c.woff") format("woff");
+    src:url("/fonts/11c6aeb4-7b81-495c-993c-3a5a5eae62ba.woff2") format("woff2"),url("/fonts/ad7230bf-12b5-4f04-865c-128399e9d26c.woff") format("woff");
   }
   @font-face{
 		font-family:"Abramo Script W05 Regular";
-		src:url("/_fonts/85ac0d23-7a3d-4612-8776-e42d5d19ab9d.woff2") format("woff2"),url("/_fonts/2d40b1ce-a66f-42af-9370-985669f861bc.woff") format("woff");
+		src:url("/fonts/85ac0d23-7a3d-4612-8776-e42d5d19ab9d.woff2") format("woff2"),url("/fonts/2d40b1ce-a66f-42af-9370-985669f861bc.woff") format("woff");
 	}
   @font-face{
     font-family:"Ador W01 Light";
-    src:url("/_fonts/99e52a91-cd92-4f83-b85a-83b01323d552.woff2") format("woff2"),url("/_fonts/1499358e-b909-45ec-be61-3b50c2a22a34.woff") format("woff");
+    src:url("/fonts/99e52a91-cd92-4f83-b85a-83b01323d552.woff2") format("woff2"),url("/fonts/1499358e-b909-45ec-be61-3b50c2a22a34.woff") format("woff");
   }
   @font-face{
 		font-family:"Simple Serenity Script W05 Rg";
-		src:url("/_fonts/58173024-fa99-4596-b615-fbff18ed4b85.woff2") format("woff2"),url("/_fonts/36183182-221f-46ed-8be8-4c7255e1653e.woff") format("woff");
+		src:url("/fonts/58173024-fa99-4596-b615-fbff18ed4b85.woff2") format("woff2"),url("/fonts/36183182-221f-46ed-8be8-4c7255e1653e.woff") format("woff");
 	}
 
 /* CSS Document */
